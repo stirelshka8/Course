@@ -8,7 +8,7 @@ class VkPhoto:
     def __init__ (self, token_vk):
         self.token = token_vk
 
-    def _data_photos (self,offset=0, count=50):
+    def __data_photos (self,offset=0, count=50):
         url = 'https://api.vk.com/method/photos.get'
         params = {'owner_id': '1',
                     'album_id': 'profile',
@@ -27,7 +27,7 @@ class VkPhoto:
         if not os.path.exists('photo'):
             os.mkdir('photo')
 
-        self.extracting_data = self._data_photos()
+        self.extracting_data = self.__data_photos()
         self.number_all_photos = self.extracting_data['response']['count']
         self.list_photo = []
         self.name_and_link = {}
@@ -41,5 +41,5 @@ class VkPhoto:
 
 
 aaaa = VkPhoto(access_token)
-print(aaaa._data_photos())
+print(aaaa.__data_photos())
 
