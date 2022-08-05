@@ -23,6 +23,7 @@ class VkPhoto:
         request_vk = requests.get(url=url, params=params)
         return request_vk.json()
 
+# TODO: функцию извлечения фотографий так же сделать защищенной!!!
     def extracting_photos (self):
         if not os.path.exists('photo'):
             os.mkdir('photo')
