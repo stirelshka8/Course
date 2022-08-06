@@ -43,8 +43,9 @@ class VkPhoto:
             for self.extracting_photo in self.extracting_data['response']['items']:
                 self.size_extracting_photo = 0
                 self.info_extracting_photo = {}
+            
 
 
 aaaa = VkPhoto(access_token)
-print(aaaa._data_photos())
+print(aaaa.extracting_photos())
 
