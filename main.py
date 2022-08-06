@@ -1,4 +1,5 @@
 import os
+import json
 import requests
 from configuration import access_token
 
@@ -8,7 +9,7 @@ class VkPhoto:
     def __init__ (self, token_vk):
         self.token = token_vk
 
-    def __data_photos (self,offset=0, count=50):
+    def _data_photos (self,offset=0, count=50):
         url = 'https://api.vk.com/method/photos.get'
         params = {'owner_id': '1',
                     'album_id': 'profile',
@@ -23,12 +24,12 @@ class VkPhoto:
         request_vk = requests.get(url=url, params=params)
         return request_vk.json()
 
-# TODO: функцию извлечения фотографий так же сделать защищенной!!!
+# TODO: функцию извлечения фотографий так же сделать приватной!!!
     def extracting_photos (self):
         if not os.path.exists('photo'):
             os.mkdir('photo')
 
-        self.extracting_data = self.__data_photos()
+        self.extracting_data = self._data_photos()
         self.number_all_photos = self.extracting_data['response']['count']
         self.list_photo = []
         self.name_and_link = {}
@@ -39,8 +40,11 @@ class VkPhoto:
             if self.step != 0:
                 self.extracting_data = self._data_photos(offset=self.step, count=self.count)
 
+            for self.extracting_photo in self.extracting_data['response']['items']:
+                self.size_extracting_photo = 0
+                self.info_extracting_photo = {}
 
 
 aaaa = VkPhoto(access_token)
-print(aaaa.__data_photos())
+print(aaaa._data_photos())
 
