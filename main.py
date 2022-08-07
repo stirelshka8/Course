@@ -43,6 +43,9 @@ class VkPhoto:
             for self.extracting_photo in self.extracting_data['response']['items']:
                 self.size_extracting_photo = 0
                 self.info_extracting_photo = {}
+                for self.size_photo in self.extracting_photo['sizes']:
+                    print(self.size_photo)
+                    self.step += 1
             
 
 
