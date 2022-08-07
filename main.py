@@ -1,6 +1,4 @@
-import os
-import json
-import requests
+import os, json, requests
 from configuration import access_token
 
 
