@@ -1,13 +1,20 @@
 import os, json, requests
 from configuration import access_token
 
+def startup():
+    user_id = str(input("Введите ID пользователя ВКонтакте - > "))
+    yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
+
+    startup_vk = VkPhoto(access_token, user_id)
+    startup_vk.extracting_photos()    
 
 class VkPhoto:
 
-    def __init__ (self, token_vk):
+    def __init__ (self, token_vk, user_id):
         self.token = token_vk
+        self.user_id = user_id
 
-    def _data_photos (self,offset=0, count=50):
+    def _data_photos (self, offset=0, count=50):
         url = 'https://api.vk.com/method/photos.get'
         params = {'owner_id': self.user_id,
                     'album_id': 'profile',
@@ -22,7 +29,7 @@ class VkPhoto:
         request_vk = requests.get(url=url, params=params)
         return request_vk.json()
 
-    def _extracting_photos (self):
+    def extracting_photos (self):
         if not os.path.exists('photo'):
             os.mkdir('photo')
 
@@ -63,15 +70,7 @@ class VkPhoto:
                 json.dump(self.list_photo, self.open_json, indent=4)
             
             self.step += self.count
-    
-    def startup(self):
-        self.user_id = str(input("Введите ID пользователя ВКонтакте - > "))
-       
-        print(startup_programm._extracting_photos())
-
-
-
+ 
 if __name__ == '__main__':
-    startup_programm = VkPhoto(access_token)
-    startup_programm.startup()
+    startup()
 
