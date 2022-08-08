@@ -2,12 +2,14 @@ import os, json, requests, getpass
 from configuration import access_token
 
 def startup():
-    user_id = str(input("Введите ID пользователя ВКонтакте - > "))
-    yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
-    name_folder = getpass.getuser()
+    input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
+    input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
 
-    startup_vk = VkPhoto(access_token, user_id)
-    startup_vk.extracting_photos()    
+    startup_vk = VkPhoto(access_token, input_user_id)
+    startup_vk.extracting_photos()
+
+    startup_ya = YandexUpload(input_yandex_token)
+    startup_ya.creating_directory()    
 
 class VkPhoto:
 
@@ -73,6 +75,19 @@ class VkPhoto:
                 json.dump(self.list_photo, self.open_json, indent=4)
             
             self.step += self.count
+
+class YandexUpload:
+
+    def __init__(self, yandex_token):
+        self.yandex_token = yandex_token
+        self.name_folder = getpass.getuser()
+
+    def creating_directory(self):
+        self.yandex_url = 'https://cloud-api.yandex.net/v1/disk/resources/'
+        self.headers = {'Content-Type': 'application/json', 'Authorization': f'OAuth {self.yandex_token}'}
+        self.params = {'path': f'{self.name_folder}', 'overwrite': 'false'}
+        self.send_request = requests.put(url=self.yandex_url, headers=self.headers, params=self.params)
+
  
 if __name__ == '__main__':
     startup()
