@@ -1,9 +1,10 @@
-import os, json, requests
+import os, json, requests, getpass
 from configuration import access_token
 
 def startup():
     user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
+    name_folder = getpass.getuser()
 
     startup_vk = VkPhoto(access_token, user_id)
     startup_vk.extracting_photos()    
@@ -75,4 +76,3 @@ class VkPhoto:
  
 if __name__ == '__main__':
     startup()
-
