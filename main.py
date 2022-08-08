@@ -47,10 +47,12 @@ class VkPhoto:
             for self.extracting_photo in self.extracting_data['response']['items']:
                 self.size_extracting_photo = 0
                 self.info_extracting_photo = {}
+                
                 for self.size_photo in self.extracting_photo['sizes']:
                     if self.size_photo['height'] >= self.size_extracting_photo:
                         self.size_extracting_photo = self.size_photo['height']
                         print(self.size_extracting_photo)
+
                 if self.extracting_photo['likes']['count'] not in self.name_and_link.keys():
                     self.name_and_link[self.extracting_photo['likes']['count']] = self.size_photo['url']
                     self.info_extracting_photo['file_name'] = f"{self.extracting_photo['likes']['count']}.jpg"
