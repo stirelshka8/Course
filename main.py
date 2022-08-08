@@ -9,7 +9,7 @@ class VkPhoto:
 
     def _data_photos (self,offset=0, count=50):
         url = 'https://api.vk.com/method/photos.get'
-        params = {'owner_id': '1',
+        params = {'owner_id': self.user_id,
                     'album_id': 'profile',
                     'access_token': self.token,
                     'v': '5.131',
@@ -22,8 +22,7 @@ class VkPhoto:
         request_vk = requests.get(url=url, params=params)
         return request_vk.json()
 
-# TODO: функцию извлечения фотографий так же сделать приватной!!!
-    def extracting_photos (self):
+    def _extracting_photos (self):
         if not os.path.exists('photo'):
             os.mkdir('photo')
 
@@ -49,8 +48,8 @@ class VkPhoto:
                     self.name_and_link[self.extracting_photo['likes']['count']] = self.size_photo['url']
                     self.info_extracting_photo['file_name'] = f"{self.extracting_photo['likes']['count']}.jpg"
                 else:
-                    self.name_and_link[f"{self.extracting_photo['likes']['count']} + {self.extracting_photo['date']}"] = self.size_photo['url']
-                    self.info_extracting_photo['file_name'] = f"{self.extracting_photo['likes']['count']} + {self.extracting_photo['date']}.jpg"
+                    self.name_and_link[f"{self.extracting_photo['likes']['count']}_{self.extracting_photo['date']}"] = self.size_photo['url']
+                    self.info_extracting_photo['file_name'] = f"{self.extracting_photo['likes']['count']}_{self.extracting_photo['date']}.jpg"
 
                 self.info_extracting_photo['size'] = self.size_photo['type']
                 self.list_photo.append(self.info_extracting_photo)
@@ -64,8 +63,15 @@ class VkPhoto:
                 json.dump(self.list_photo, self.open_json, indent=4)
             
             self.step += self.count
+    
+    def startup(self):
+        self.user_id = str(input("Введите ID пользователя ВКонтакте - > "))
+       
+        print(startup_programm._extracting_photos())
 
 
-aaaa = VkPhoto(access_token)
-print(aaaa.extracting_photos())
+
+if __name__ == '__main__':
+    startup_programm = VkPhoto(access_token)
+    startup_programm.startup()
 
