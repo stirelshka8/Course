@@ -2,18 +2,29 @@ import os, json, requests, getpass
 from configuration import access_token
 
 def startup():
+    name_temp_folder = 'photo'
+
     input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
 
-    startup_vk = VkPhoto(access_token, input_user_id)
+    startup_vk = VkPhoto(access_token, input_user_id, name_temp_folder)
     startup_vk.extracting_photos()
 
-    startup_ya = YandexUpload(input_yandex_token)
-    startup_ya.creating_directory()    
+    startup_ya = YandexUpload(input_yandex_token, name_temp_folder, file_path)
+    startup_ya.creating_directory()
+
+    list_photos = os.listdir(name_temp_folder)
+    photo_counter = 0
+
+    for list_photo in list_photos:
+        file_path = f'{os.getcwd()}/{name_temp_folder}/{list_photo}'
+        startup_ya.upload_photo()         
+        photo_counter += 1
 
 class VkPhoto:
 
-    def __init__ (self, token_vk, user_id):
+    def __init__ (self, token_vk, user_id, name_temp_folder):
+        self.name_temp_folder = name_temp_folder
         self.token = token_vk
         self.user_id = user_id
 
@@ -33,8 +44,8 @@ class VkPhoto:
         return request_vk.json()
 
     def extracting_photos (self):
-        if not os.path.exists('photo'):
-            os.mkdir('photo')
+        if not os.path.exists(self.name_temp_folder):
+            os.mkdir(self.name_temp_folder)
 
         self.extracting_data = self._data_photos()
         self.number_all_photos = self.extracting_data['response']['count']
@@ -78,15 +89,27 @@ class VkPhoto:
 
 class YandexUpload:
 
-    def __init__(self, yandex_token):
+    def __init__(self, yandex_token, name_temp_folder, file_path):
         self.yandex_token = yandex_token
+        self.name_temp_folder = name_temp_folder
+        self.file_path = file_path
         self.name_folder = getpass.getuser()
-
+            
     def creating_directory(self):
         self.yandex_url = 'https://cloud-api.yandex.net/v1/disk/resources/'
         self.headers = {'Content-Type': 'application/json', 'Authorization': f'OAuth {self.yandex_token}'}
         self.params = {'path': f'{self.name_folder}', 'overwrite': 'false'}
         self.send_request = requests.put(url=self.yandex_url, headers=self.headers, params=self.params)
+    
+    def upload_photo(self):
+        self.yandex_upload_url = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
+        self.headers = {'Content-Type': 'application/json', 'Authorization': f'OAuth {self.yandex_token}'}
+        self.params = {'path': f'{self.name_folder}/{self.list_photo}', 'overwrite': 'true'}
+
+        self.request_yandex = requests.get(url=self.yandex_upload_url, headers=self.headers, params=self.params)
+        self.received_link = self.request_yandex.json().get('href')
+        self.uploader_photo = requests.put(self.received_link, data=open(self.file_path, 'rb'))
+
 
  
 if __name__ == '__main__':
