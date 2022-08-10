@@ -4,12 +4,12 @@ from configuration import access_token, yandex_token
 
 #TODO: Не забыть удалить и раскоментировать Я.Токен!!!!!!!
 logging.basicConfig(filename="logging.log", level=logging.INFO)
+
 name_temp_folder = 'photo'
 if not os.path.exists(name_temp_folder):
     os.mkdir(name_temp_folder)
 
 def startup():
-      
     dir_photos = os.listdir(name_temp_folder)
     photo_counter = 0
     #input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
@@ -18,7 +18,7 @@ def startup():
     input_yandex_token = yandex_token
     startup_vk = VkPhoto(access_token, input_user_id, name_temp_folder)
     startup_vk.extracting_photos()
-    startup_ya = YandexUpload(input_yandex_token, name_temp_folder)
+    startup_ya = YandexUpload(input_yandex_token)
     startup_ya.creating_directory()
    
 
@@ -27,10 +27,10 @@ def startup():
         file_path = f'{os.getcwd()}/{name_temp_folder}/{dir_photo}'
         startup_ya.upload_photo(file_path, file_photo_name)         
         photo_counter += 1
+        
     print(f'[INFO] Загружено {photo_counter} фотографий на Я.Диск')
     
     logging.info(f"{datetime.datetime.now()} На Я.Диск, в папку {getpass.getuser()} загружено {photo_counter} фотографий")
-
 
 class VkPhoto:
 
@@ -55,8 +55,6 @@ class VkPhoto:
         return request_vk.json()
 
     def extracting_photos (self):
-        if not os.path.exists(self.name_temp_folder):
-            os.mkdir(self.name_temp_folder)
 
         self.extracting_data = self._data_photos()
         self.number_all_photos = self.extracting_data['response']['count']
@@ -94,8 +92,7 @@ class VkPhoto:
                     self.open_file.write(self.images_open.content)
                     self.counter_download_photo += 1
             print(f'[INFO] Скачано {self.counter_download_photo} фотографий с профиля VK')
-            logging.info(f"{datetime.datetime.now()} Из профиля Вконтакте {self.user_id}, во временную папку \{self.name_temp_folder}\ скачано {self.counter_download_photo} фотографий")
-
+            logging.info(f"{datetime.datetime.now()} Из профиля Вконтакте ID - {self.user_id}, во временную папку \{self.name_temp_folder}\ скачано {self.counter_download_photo} фотографий")
             with open('info_photo.json', 'w') as self.open_json:
                 json.dump(self.list_photo, self.open_json, indent=4)
             
@@ -103,10 +100,8 @@ class VkPhoto:
 
 class YandexUpload:
 
-    def __init__(self, yandex_token, name_temp_folder):
-        self.yandex_token = yandex_token
-        self.name_temp_folder = name_temp_folder
-        
+    def __init__(self, yandex_token):
+        self.yandex_token = yandex_token       
         self.name_folder = getpass.getuser()
             
     def creating_directory(self):
@@ -125,6 +120,7 @@ class YandexUpload:
         self.request_yandex = requests.get(url=self.yandex_upload_url, headers=self.headers, params=self.params)
         self.received_link = self.request_yandex.json().get('href')
         self.uploader_photo = requests.put(self.received_link, data=open(self.file_path, 'rb'))
+        return
 
 
  
