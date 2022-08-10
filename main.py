@@ -8,10 +8,13 @@ from configuration import access_token, yandex_token
 
 def startup():
     name_temp_folder = 'photo'
-
-    dir_photos = os.listdir(name_temp_folder)
     photo_counter = 0
 
+    if not os.path.exists(name_temp_folder):
+        os.mkdir(name_temp_folder)
+    else:
+        dir_photos = os.listdir(name_temp_folder)
+    
     #input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     #input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
     input_user_id = '1'
