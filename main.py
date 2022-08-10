@@ -3,29 +3,26 @@ from configuration import access_token
 
 def startup():
     name_temp_folder = 'photo'
-    file_photo_name = None
+
     dir_photos = os.listdir(name_temp_folder)
     photo_counter = 0
 
     #input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     #input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
     input_user_id = '1'
-    input_yandex_token = '000000000000000000000'
+    input_yandex_token = '00000000000000000'
     startup_vk = VkPhoto(access_token, input_user_id, name_temp_folder)
     startup_vk.extracting_photos()
-    startup_ya = YandexUpload(input_yandex_token, name_temp_folder, file_photo_name)
+    startup_ya = YandexUpload(input_yandex_token, name_temp_folder)
     startup_ya.creating_directory()
    
 
     for dir_photo in dir_photos: 
         file_photo_name = dir_photo      
         file_path = f'{os.getcwd()}/{name_temp_folder}/{dir_photo}'
-        startup_ya.upload_photo(file_path)         
+        startup_ya.upload_photo(file_path, file_photo_name)         
         photo_counter += 1
         print(f'[INFO] Загружено - {photo_counter} фотографий')
-
-
-
 
 class VkPhoto:
 
@@ -94,10 +91,10 @@ class VkPhoto:
 
 class YandexUpload:
 
-    def __init__(self, yandex_token, name_temp_folder, list_photo):
+    def __init__(self, yandex_token, name_temp_folder):
         self.yandex_token = yandex_token
         self.name_temp_folder = name_temp_folder
-        self.startup_list = list_photo
+        
         self.name_folder = getpass.getuser()
             
     def creating_directory(self):
@@ -106,8 +103,9 @@ class YandexUpload:
         self.params = {'path': f'{self.name_folder}', 'overwrite': 'false'}
         self.send_request = requests.put(url=self.yandex_url, headers=self.headers, params=self.params)
     
-    def upload_photo(self, file_path):
+    def upload_photo(self, file_path, file_photo_name):
         self.file_path = file_path
+        self.startup_list = file_photo_name
         self.yandex_upload_url = 'https://cloud-api.yandex.net/v1/disk/resources/upload'
         self.headers = {'Content-Type': 'application/json', 'Authorization': f'OAuth {self.yandex_token}'}
         self.params = {'path': f'{self.name_folder}/{self.startup_list}', 'overwrite': 'true'}
