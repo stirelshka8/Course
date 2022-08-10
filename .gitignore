@@ -3,3 +3,4 @@ test.py
 __pycache__
 /photo
 info_photo.json
+logging.log
