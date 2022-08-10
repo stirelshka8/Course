@@ -1,5 +1,10 @@
 import os, json, requests, getpass
-from configuration import access_token
+from configuration import access_token, yandex_token
+
+
+#TODO: Не забыть удалить и раскоментировать Я.Токен!!!!!!!
+
+
 
 def startup():
     name_temp_folder = 'photo'
@@ -10,7 +15,7 @@ def startup():
     #input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     #input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
     input_user_id = '1'
-    input_yandex_token = '00000000000000000'
+    input_yandex_token = yandex_token
     startup_vk = VkPhoto(access_token, input_user_id, name_temp_folder)
     startup_vk.extracting_photos()
     startup_ya = YandexUpload(input_yandex_token, name_temp_folder)
@@ -23,6 +28,7 @@ def startup():
         startup_ya.upload_photo(file_path, file_photo_name)         
         photo_counter += 1
         print(f'[INFO] Загружено - {photo_counter} фотографий')
+
 
 class VkPhoto:
 
