@@ -6,6 +6,9 @@ logging.basicConfig(filename="logging.log", level=logging.INFO)
 
 def startup():
     name_temp_folder = 'photo'
+    input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
+    input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
+
     if not os.path.exists(name_temp_folder):
         os.mkdir(name_temp_folder)
         print("[INFO] Директория для загружки фотографий создана")
@@ -13,9 +16,6 @@ def startup():
     else:
         print("[INFO] Директория для загружки фотографий уже существует")
         logging.info(f"{datetime.datetime.now()} Директория {name_temp_folder} уже существует")
-
-    input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
-    input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
 
     startup_vk = VkPhoto(access_token, input_user_id, name_temp_folder)
     startup_vk.extracting_photos()
