@@ -18,6 +18,7 @@ def startup():
     startup_vk.extracting_photos()
     startup_ya = YandexUpload(input_yandex_token)
     startup_ya.creating_directory()
+    
     dir_photos = os.listdir(name_temp_folder)
     photo_counter = 0
 
