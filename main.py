@@ -5,40 +5,51 @@ from progress.bar import IncrementalBar
 logging.basicConfig(filename="logging.log", level=logging.INFO)
 
 def startup():
-    name_temp_folder = 'photo'
+    os.system('clear')
     input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
-
+    name_temp_folder = 'photo'
     if not os.path.exists(name_temp_folder):
         os.mkdir(name_temp_folder)
         print("[INFO] Директория для загружки фотографий создана")
-        logging.info(f"{datetime.datetime.now()} Директория {name_temp_folder} создана")
+        logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ создана")
     else:
         print("[INFO] Директория для загружки фотографий уже существует")
-        logging.info(f"{datetime.datetime.now()} Директория {name_temp_folder} уже существует")
+        logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ уже существует")
 
     startup_vk = VkPhoto(access_token, input_user_id, name_temp_folder)
-    startup_vk.extracting_photos()
     startup_ya = YandexUpload(input_yandex_token)
     startup_ya.creating_directory()
 
-    dir_photos = os.listdir(name_temp_folder)
-    photo_counter = 0
-    print('[INFO] Начало загрузки фотографий на Я.Диск')
-    bar_upload = IncrementalBar('[INFO] Загрузка', max = len(dir_photos))
-    for dir_photo in dir_photos:
-        bar_upload.next() 
-        file_photo_name = dir_photo      
-        file_path = f'{os.getcwd()}/{name_temp_folder}/{dir_photo}'
-        startup_ya.upload_photo(file_path, file_photo_name)         
-        photo_counter += 1
-    bar_upload.finish()    
-    print(f'[INFO] Загружено {photo_counter} фотографий на Я.Диск')
-    
-    logging.info(f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
+    try:
+        startup_vk.extracting_photos()
+        dir_photos = os.listdir(name_temp_folder)
+        photo_counter = 0
+        print('[INFO] Начало загрузки фотографий на Я.Диск')
+        bar_upload = IncrementalBar('[INFO] Загрузка', max = len(dir_photos))
+        for dir_photo in dir_photos:
+            bar_upload.next() 
+            file_photo_name = dir_photo      
+            file_path = f'{os.getcwd()}/{name_temp_folder}/{dir_photo}'
+
+            try:
+                startup_ya.upload_photo(file_path, file_photo_name)
+            except requests.exceptions.MissingSchema:
+                os.system('clear')
+                print('[ERROR] Ошибка загрузки фотографий. Возможно введен не верный токен Я.Диска!')
+                logging.error(f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно введен не верный токен Я.Диска!")
+                break
+
+            photo_counter += 1
+        bar_upload.finish()    
+        print(f'[INFO] Загружено {photo_counter} фотографий на Я.Диск')
+        logging.info(f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
+    except KeyError:
+        print('[ERROR] Ошибка выполнения. Возможно не введен токен!')
+        logging.error(f"{datetime.datetime.now()} Ошибка выполнения программы. Возможно не введен токен ВКонтакте в файле конфигурации!")
+  
 
 class VkPhoto:
-
     def __init__ (self, token_vk, user_id, name_temp_folder):
         self.name_temp_folder = name_temp_folder
         self.token = token_vk
@@ -60,7 +71,6 @@ class VkPhoto:
         return request_vk.json()
 
     def extracting_photos (self):
-
         self.extracting_data = self._data_photos()
         self.number_all_photos = self.extracting_data['response']['count']
         self.list_photo = []
@@ -103,11 +113,9 @@ class VkPhoto:
             logging.info(f"{datetime.datetime.now()} Из профиля Вконтакте ID - {self.user_id}, в папку \{self.name_temp_folder}\ загружено {self.counter_download_photo} фотографий")
             with open('info_photo.json', 'w') as self.open_json:
                 json.dump(self.list_photo, self.open_json, indent=4)
-            
             self.step += self.count
 
 class YandexUpload:
-
     def __init__(self, yandex_token):
         self.yandex_token = yandex_token       
         self.name_folder = getpass.getuser()
