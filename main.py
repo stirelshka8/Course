@@ -45,8 +45,8 @@ def startup():
         print(f'[INFO] Загружено {photo_counter} фотографий на Я.Диск')
         logging.info(f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
     except KeyError:
-        print('[ERROR] Ошибка выполнения. Возможно не введен токен!')
-        logging.error(f"{datetime.datetime.now()} Ошибка выполнения программы. Возможно не введен токен ВКонтакте в файле конфигурации!")
+        print('[ERROR] Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте!')
+        logging.error(f"{datetime.datetime.now()}  Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
   
 
 class VkPhoto:
