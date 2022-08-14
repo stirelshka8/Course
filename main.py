@@ -1,5 +1,5 @@
 import os, json, requests, getpass, logging, datetime
-from configuration import access_token
+from configuration import access_token, folder_name
 from progress.bar import IncrementalBar
 from datetime import date
 
@@ -9,8 +9,8 @@ def startup():
     os.system('clear')
     input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
-
-    name_temp_folder = 'photo' # Имя директории которая будет создаваться на локальном компьютере
+    name_temp_folder = f'{folder_name}_{date.today()}'
+    
     if not os.path.exists(name_temp_folder):
         os.mkdir(name_temp_folder)
         print("[INFO] Директория для загружки фотографий создана")
