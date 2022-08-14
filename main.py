@@ -1,5 +1,5 @@
 import os, json, requests, getpass, logging, datetime
-from configuration import access_token, folder_name
+from configuration import access_token_VK, access_token_YA, folder_name
 from progress.bar import IncrementalBar
 from datetime import date
 
@@ -9,6 +9,7 @@ def startup():
     os.system('clear')
     input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
+    #input_yandex_token = access_token_YA
     name_temp_folder = f'{folder_name}_{date.today()}'
     
     if not os.path.exists(name_temp_folder):
@@ -19,7 +20,7 @@ def startup():
         print("[INFO] Директория для загружки фотографий уже существует")
         logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ уже существует")
 
-    startup_vk = VkPhoto(access_token, input_user_id, name_temp_folder)
+    startup_vk = VkPhoto(access_token_VK, input_user_id, name_temp_folder)
     startup_ya = YandexUpload(input_yandex_token)
     startup_ya.creating_directory()
 
