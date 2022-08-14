@@ -1,6 +1,7 @@
 import os, json, requests, getpass, logging, datetime
 from configuration import access_token
 from progress.bar import IncrementalBar
+from datetime import date
 
 logging.basicConfig(filename="logging.log", level=logging.INFO)
 
@@ -8,7 +9,8 @@ def startup():
     os.system('clear')
     input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
     input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
-    name_temp_folder = 'photo'
+
+    name_temp_folder = 'photo' # Имя директории которая будет создаваться на локальном компьютере
     if not os.path.exists(name_temp_folder):
         os.mkdir(name_temp_folder)
         print("[INFO] Директория для загружки фотографий создана")
@@ -46,7 +48,7 @@ def startup():
         logging.info(f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
     except KeyError:
         print('[ERROR] Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте!')
-        logging.error(f"{datetime.datetime.now()}  Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
+        logging.error(f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
   
 
 class VkPhoto:
@@ -118,7 +120,7 @@ class VkPhoto:
 class YandexUpload:
     def __init__(self, yandex_token):
         self.yandex_token = yandex_token       
-        self.name_folder = getpass.getuser()
+        self.name_folder = f'{getpass.getuser()}_{date.today()}'
             
     def creating_directory(self):
         self.yandex_url = 'https://cloud-api.yandex.net/v1/disk/resources/'
