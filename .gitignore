@@ -1,6 +1,6 @@
 test.py
 __pycache__
-/photo
+/photo*
 info_photo.json
 logging.log
 .vscode
