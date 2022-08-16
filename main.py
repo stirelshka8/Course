@@ -14,10 +14,10 @@ def startup():
     
     if not os.path.exists(name_temp_folder):
         os.mkdir(name_temp_folder)
-        print("[INFO] Директория для загружки фотографий создана")
+        print(f"[INFO] Директория для загрузки фотографий /{name_temp_folder}/ создана")
         logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ создана")
     else:
-        print("[INFO] Директория для загружки фотографий уже существует")
+        print(f"[INFO] Директория для загружки фотографий /{name_temp_folder}/ уже существует")
         logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ уже существует")
 
     startup_vk = VkPhoto(access_token_VK, input_user_id, name_temp_folder)
