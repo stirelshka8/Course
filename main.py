@@ -58,14 +58,6 @@ def startup():
 
 class VkPhoto:
     def __init__(self, token_vk, user_id, name_temp_folder):
-        self.extracting_photo = None
-        self.counter_download_photo = None
-        self.count = None
-        self.step = None
-        self.name_and_link = None
-        self.list_photo = None
-        self.number_all_photos = None
-        self.extracting_data = None
         self.name_temp_folder = name_temp_folder
         self.token = token_vk
         self.user_id = user_id
