@@ -1,10 +1,10 @@
-import os, json, requests, getpass, logging, datetime
-from configuration import access_token_VK, access_token_YA, folder_name
+import os, json, requests, getpass, logging, datetime, configparser
 from progress.bar import IncrementalBar
 from datetime import date
 
 logging.basicConfig(filename="logging.log", level=logging.INFO)
-
+config = configparser.ConfigParser()
+config.read("configuration.ini")
 
 def startup():
     os.system('clear')
@@ -22,12 +22,10 @@ def startup():
 █░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀░░░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀▄▀▄▀░░█
 █░░░░░░░░░░░░░░█░░░░░░█████████░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░██░░░░░░█░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░██░░░░░░░░░░█
 █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████""")
-    print()
-    print()
-    input_user_id = str(input("Введите ID пользователя ВКонтакте - > "))
-    input_yandex_token = str(input("Введите токен Я.Диска для загрузки фотографий - > "))
-    # input_yandex_token = access_token_YA
-    name_temp_folder = f'{folder_name}_{date.today()}'
+    input_user_id = str(input("\n Введите ID пользователя ВКонтакте - > "))
+    input_yandex_token = str(input("\n Введите токен Я.Диска для загрузки фотографий - > "))
+
+    name_temp_folder = f'{config["Setting"]["folder_name"]}_{date.today()}'
 
     if not os.path.exists(name_temp_folder):
         os.mkdir(name_temp_folder)
@@ -37,7 +35,7 @@ def startup():
         print(f"[INFO] Директория для загружки фотографий /{name_temp_folder}/ уже существует")
         logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ уже существует")
 
-    startup_vk = VkPhoto(access_token_VK, input_user_id, name_temp_folder)
+    startup_vk = VkPhoto(config["Token"]["access_token_VK"], input_user_id, name_temp_folder)
     startup_ya = YandexUpload(input_yandex_token)
     startup_ya.creating_directory()
 
