@@ -1,4 +1,5 @@
-import os, json, requests, getpass, logging, datetime, configparser
+from importlib.resources import path
+import os, json, requests, getpass, logging, datetime, configparser, shutil
 from progress.bar import IncrementalBar
 from datetime import date
 
@@ -25,9 +26,10 @@ class Uploader:
     █░░░░░░░░░░░░░░█░░░░░░█████████░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░██░░░░░░█░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░██░░░░░░░░░░█
     █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████""")
         input_user_id = str(input("\n Введите ID пользователя ВКонтакте - > "))
-        input_yandex_token = str(input("\n Введите токен Я.Диска для загрузки фотографий - > "))
-
+        input_yandex_token = Uploader.config["Token"]["access_token_YA"]
         name_temp_folder = f'{Uploader.config["Setting"]["folder_name"]}_{date.today()}'
+        save_params = Uploader.config["Setting"]["preservation"]
+        full_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), name_temp_folder)
 
         if not os.path.exists(name_temp_folder):
             os.mkdir(name_temp_folder)
@@ -68,8 +70,19 @@ class Uploader:
                 f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
         except KeyError:
             print('[ERROR] Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте!')
-            logging.error(
-                f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
+            logging.error(f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
+      
+        
+        if save_params == "False":
+            shutil.rmtree(name_temp_folder)
+            print(f'[INFO] Временная директория {full_path} удалена!')
+            logging.info(f"{datetime.datetime.now()} Временная директория {full_path} удалена!")
+        elif save_params == "True":
+            print(f'[INFO] Временная директория сохранена по пути {full_path}!')
+            logging.info(f"{datetime.datetime.now()} Временная директория сохранена по пути {full_path}")
+        else:
+            print('[ERROR] Неверно указан параметр сохранеия в файле конфигурации! Директория сохранена!')
+            logging.error(f"{datetime.datetime.now()} Неверно указан параметр сохранеия в файле конфигурации (preservation)! Директория сохранена!")
 
 
 class VkPhoto:
