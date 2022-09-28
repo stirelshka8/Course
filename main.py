@@ -1,4 +1,3 @@
-from importlib.resources import path
 import os, json, requests, getpass, logging, datetime, configparser, shutil
 from progress.bar import IncrementalBar
 from datetime import date
