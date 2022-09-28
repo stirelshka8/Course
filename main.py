@@ -2,72 +2,74 @@ import os, json, requests, getpass, logging, datetime, configparser
 from progress.bar import IncrementalBar
 from datetime import date
 
-logging.basicConfig(filename="logging.log", level=logging.INFO)
-config = configparser.ConfigParser()
-config.read("configuration.ini")
+class Uploader:
+    
+    logging.basicConfig(filename="logging.log", level=logging.INFO)
+    config = configparser.ConfigParser()
+    config.read("configuration.ini")
 
-def startup():
-    os.system('clear')
-    print("""
-█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
-█░░░░░░██░░░░░░█░░░░░░░░░░░░░░█░░░░░░█████████░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░███
-█░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀░░░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███
-█░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░█████████░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░▄▀▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░░░░░░░▄▀░░███
-█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░████░░▄▀░░███
-█░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░░░░░░░▄▀░░███
-█░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███
-█░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░░░░░▄▀░░░░███
-█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█████
-█░░▄▀░░░░░░▄▀░░█░░▄▀░░█████████░░▄▀░░░░░░░░░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░░░▄▀▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░██░░▄▀░░░░░░█
-█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀░░░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀▄▀▄▀░░█
-█░░░░░░░░░░░░░░█░░░░░░█████████░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░██░░░░░░█░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░██░░░░░░░░░░█
-█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████""")
-    input_user_id = str(input("\n Введите ID пользователя ВКонтакте - > "))
-    input_yandex_token = str(input("\n Введите токен Я.Диска для загрузки фотографий - > "))
+    def startup():
+        os.system('clear')
+        print("""
+    █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+    █░░░░░░██░░░░░░█░░░░░░░░░░░░░░█░░░░░░█████████░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░███
+    █░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀░░░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███
+    █░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░█████████░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░▄▀▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░░░░░░░▄▀░░███
+    █░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░████░░▄▀░░███
+    █░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░░░░░░░▄▀░░███
+    █░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░███
+    █░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░░░░░▄▀░░░░███
+    █░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░█████████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████░░▄▀░░██░░▄▀░░█████
+    █░░▄▀░░░░░░▄▀░░█░░▄▀░░█████████░░▄▀░░░░░░░░░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░░░▄▀▄▀░░█░░▄▀░░░░░░░░░░█░░▄▀░░██░░▄▀░░░░░░█
+    █░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀░░░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀▄▀▄▀░░█
+    █░░░░░░░░░░░░░░█░░░░░░█████████░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░██░░░░░░█░░░░░░░░░░░░███░░░░░░░░░░░░░░█░░░░░░██░░░░░░░░░░█
+    █████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████""")
+        input_user_id = str(input("\n Введите ID пользователя ВКонтакте - > "))
+        input_yandex_token = str(input("\n Введите токен Я.Диска для загрузки фотографий - > "))
 
-    name_temp_folder = f'{config["Setting"]["folder_name"]}_{date.today()}'
+        name_temp_folder = f'{Uploader.config["Setting"]["folder_name"]}_{date.today()}'
 
-    if not os.path.exists(name_temp_folder):
-        os.mkdir(name_temp_folder)
-        print(f"[INFO] Директория для загрузки фотографий /{name_temp_folder}/ создана")
-        logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ создана")
-    else:
-        print(f"[INFO] Директория для загружки фотографий /{name_temp_folder}/ уже существует")
-        logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ уже существует")
+        if not os.path.exists(name_temp_folder):
+            os.mkdir(name_temp_folder)
+            print(f"[INFO] Директория для загрузки фотографий /{name_temp_folder}/ создана")
+            logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ создана")
+        else:
+            print(f"[INFO] Директория для загружки фотографий /{name_temp_folder}/ уже существует")
+            logging.info(f"{datetime.datetime.now()} Директория /{name_temp_folder}/ уже существует")
 
-    startup_vk = VkPhoto(config["Token"]["access_token_VK"], input_user_id, name_temp_folder)
-    startup_ya = YandexUpload(input_yandex_token)
-    startup_ya.creating_directory()
+        startup_vk = VkPhoto(Uploader.config["Token"]["access_token_VK"], input_user_id, name_temp_folder)
+        startup_ya = YandexUpload(input_yandex_token)
+        startup_ya.creating_directory()
 
-    try:
-        startup_vk.extracting_photos()
-        dir_photos = os.listdir(name_temp_folder)
-        photo_counter = 0
-        print('[INFO] Начало загрузки фотографий на Я.Диск')
-        bar_upload = IncrementalBar('[INFO] Загрузка', max=len(dir_photos))
-        for dir_photo in dir_photos:
-            bar_upload.next()
-            file_photo_name = dir_photo
-            file_path = f'{os.getcwd()}/{name_temp_folder}/{dir_photo}'
+        try:
+            startup_vk.extracting_photos()
+            dir_photos = os.listdir(name_temp_folder)
+            photo_counter = 0
+            print('[INFO] Начало загрузки фотографий на Я.Диск')
+            bar_upload = IncrementalBar('[INFO] Загрузка', max=len(dir_photos))
+            for dir_photo in dir_photos:
+                bar_upload.next()
+                file_photo_name = dir_photo
+                file_path = f'{os.getcwd()}/{name_temp_folder}/{dir_photo}'
 
-            try:
-                startup_ya.upload_photo(file_path, file_photo_name)
-            except requests.exceptions.MissingSchema:
-                os.system('clear')
-                print('[ERROR] Ошибка загрузки фотографий. Возможно введен не верный токен Я.Диска!')
-                logging.error(
-                    f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно введен не верный токен Я.Диска!")
-                break
+                try:
+                    startup_ya.upload_photo(file_path, file_photo_name)
+                except requests.exceptions.MissingSchema:
+                    os.system('clear')
+                    print('[ERROR] Ошибка загрузки фотографий. Возможно введен не верный токен Я.Диска!')
+                    logging.error(
+                        f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно введен не верный токен Я.Диска!")
+                    break
 
-            photo_counter += 1
-        bar_upload.finish()
-        print(f'[INFO] Загружено {photo_counter} фотографий на Я.Диск')
-        logging.info(
-            f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
-    except KeyError:
-        print('[ERROR] Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте!')
-        logging.error(
-            f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
+                photo_counter += 1
+            bar_upload.finish()
+            print(f'[INFO] Загружено {photo_counter} фотографий на Я.Диск')
+            logging.info(
+                f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
+        except KeyError:
+            print('[ERROR] Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте!')
+            logging.error(
+                f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
 
 
 class VkPhoto:
@@ -165,4 +167,4 @@ class YandexUpload:
 
 
 if __name__ == '__main__':
-    startup()
+    Uploader.startup()
