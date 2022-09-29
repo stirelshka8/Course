@@ -3,7 +3,7 @@ from progress.bar import IncrementalBar
 from datetime import date
 
 class Uploader:
-    
+
     logging.basicConfig(filename="logging.log", level=logging.INFO)
     config = configparser.ConfigParser()
     config.read("configuration.ini")
@@ -69,9 +69,9 @@ class Uploader:
                 f"{datetime.datetime.now()} На Я.Диск, в папку \{getpass.getuser()}\ загружено {photo_counter} фотографий")
         except KeyError:
             print('[ERROR] Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте!')
-            logging.error(f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
-      
-        
+            logging.error(
+                f"{datetime.datetime.now()} Ошибка загрузки фотографий. Возможно не введен токен ВКонтакте в файле конфигурации!")
+
         if save_params == "False":
             shutil.rmtree(name_temp_folder)
             print(f'[INFO] Временная директория {full_path} удалена!')
@@ -81,7 +81,9 @@ class Uploader:
             logging.info(f"{datetime.datetime.now()} Временная директория сохранена по пути {full_path}")
         else:
             print('[ERROR] Неверно указан параметр сохранеия в файле конфигурации! Директория сохранена!')
-            logging.error(f"{datetime.datetime.now()} Неверно указан параметр сохранеия в файле конфигурации (preservation)! Директория сохранена!")
+            logging.error(
+                f"{datetime.datetime.now()} Неверно указан параметр сохранеия в файле конфигурации (preservation)! Директория сохранена!")
+
 
 
 class VkPhoto:
@@ -131,7 +133,7 @@ class VkPhoto:
                     self.info_extracting_photo['file_name'] = f"{self.extracting_photo['likes']['count']}.jpg"
                 else:
                     self.name_and_link[f"{self.extracting_photo['likes']['count']}_{self.extracting_photo['date']}"] = \
-                    self.size_photo['url']
+                        self.size_photo['url']
                     self.info_extracting_photo[
                         'file_name'] = f"{self.extracting_photo['likes']['count']}_{self.extracting_photo['date']}.jpg"
 
